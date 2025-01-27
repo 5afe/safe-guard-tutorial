@@ -1,0 +1,33 @@
+{
+  "name": "safe-guard-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5afe/safe-guard-tutorial.git"
+  },
+  "keywords": [
+    "Safe"
+  ],
+  "author": "",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/5afe/safe-guard-tutorial/issues"
+  },
+  "homepage": "https://github.com/5afe/safe-guard-tutorial#readme",
+  "overrides": {
+    "@safe-global/safe-contracts": {
+      "ethers": "^6.13.5"
+    }
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@safe-global/safe-contracts": "^1.4.1-2",
+    "hardhat": "^2.22.18",
+    "hardhat-dependency-compiler": "^1.2.1"
+  }
+}
