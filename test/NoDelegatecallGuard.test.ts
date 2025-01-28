@@ -65,7 +65,7 @@ describe("Example module tests", async function () {
 
     // Deploy the TokenWithdrawModule contract
     exampleGuard = await (
-      await ethers.getContractFactory("NoDegegateCallGuard", deployer)
+      await ethers.getContractFactory("NoDelegatecallGuard", deployer)
     ).deploy();
 
     safe = await ethers.getContractAt("Safe", safeAddress);

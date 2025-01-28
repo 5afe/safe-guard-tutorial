@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import { BaseGuard } from "@safe-global/safe-contracts/contracts/base/GuardManager.sol";
 import { Enum } from "@safe-global/safe-contracts/contracts/common/Enum.sol";
 
-contract NoDegegateCallGuard is BaseGuard {
+contract NoDelegatecallGuard is BaseGuard {
 
     error DelegateCallNotAllowed();
 
