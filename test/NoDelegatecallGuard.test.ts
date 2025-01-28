@@ -65,28 +65,43 @@ describe("NoDelegatecallGuard", async function () {
     safe = await ethers.getContractAt("Safe", safeAddress);
 
     // Set the guard in the safe
-    const setGuardData = masterCopy.interface.encodeFunctionData(
-      "setGuard",
-      [exampleGuard.target]
-    );
+    const setGuardData = masterCopy.interface.encodeFunctionData("setGuard", [
+      exampleGuard.target,
+    ]);
 
     // Execute the transaction to set the Guard
     await execTransaction([alice], safe, safe.target, 0, setGuardData, 0);
   });
 
-  // Test case to verify token transfer to bob
   it("Should not allow delegatecall", async function () {
     const wallets = [alice];
 
     await expect(
       execTransaction(wallets, safe, ZeroAddress, 0, "0x", 1)
-    ).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
+    ).to.be.revertedWithCustomError(exampleGuard, "DelegatecallNotAllowed");
   });
 
-  // Test case to verify token transfer to bob
   it("Should allow call", async function () {
     const wallets = [alice];
 
     expect(await execTransaction(wallets, safe, ZeroAddress, 0, "0x", 0));
+  });
+
+  it("Should allow to replace the guard", async function () {
+    const wallets = [alice];
+
+    const setGuardData = masterCopy.interface.encodeFunctionData("setGuard", [
+      ZeroAddress,
+    ]);
+    expect(
+      await execTransaction(
+        wallets,
+        safe,
+        await safe.getAddress(),
+        0,
+        setGuardData,
+        0
+      )
+    );
   });
 });

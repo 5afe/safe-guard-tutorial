@@ -6,7 +6,7 @@ import { Enum } from "@safe-global/safe-contracts/contracts/common/Enum.sol";
 
 contract NoDelegatecallGuard is BaseGuard {
 
-    error DelegateCallNotAllowed();
+    error DelegatecallNotAllowed();
 
     function checkTransaction(
         address /*to*/,
@@ -22,7 +22,7 @@ contract NoDelegatecallGuard is BaseGuard {
         address /*msgSender*/
     ) external {
         if(operation == Enum.Operation.DelegateCall) {
-            revert DelegateCallNotAllowed();
+            revert DelegatecallNotAllowed();
         }
     }
 
