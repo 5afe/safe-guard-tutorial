@@ -3,16 +3,16 @@ import { expect } from "chai";
 import { Signer, ZeroAddress } from "ethers";
 import { Safe, Safe__factory, SafeProxyFactory } from "../typechain-types";
 import { execTransaction } from "./utils/utils";
-import { NoDelegateCallGuard } from "../typechain-types/contracts/NoDelegateCallGuard.sol/NoDelegatecallGuard";
+import { NoDelegatecallGuard } from "../typechain-types/contracts/NoDelegatecallGuard";
 
-describe("Example module tests", async function () {
+describe("NoDelegatecallGuard", async function () {
   let deployer: Signer;
   let alice: Signer;
   let masterCopy: Safe;
   let proxyFactory: SafeProxyFactory;
   let safeFactory: Safe__factory;
   let safe: Safe;
-  let exampleGuard: NoDelegateCallGuard;
+  let exampleGuard: NoDelegatecallGuard;
   const threshold = 1;
 
   // Setup signers and deploy contracts before running tests
@@ -57,27 +57,27 @@ describe("Example module tests", async function () {
       throw new Error("Safe address not found");
     }
 
-    // Deploy the TokenWithdrawModule contract
+    // Deploy the NoDelegatecallGuard contract
     exampleGuard = await (
       await ethers.getContractFactory("NoDelegatecallGuard", deployer)
     ).deploy();
 
     safe = await ethers.getContractAt("Safe", safeAddress);
 
-    // Enable the module in the safe
-    const enableGuardData = masterCopy.interface.encodeFunctionData(
+    // Set the guard in the safe
+    const setGuardData = masterCopy.interface.encodeFunctionData(
       "setGuard",
       [exampleGuard.target]
     );
 
-    // Execute the transaction to enable the module
-    await execTransaction([alice], safe, safe.target, 0, enableGuardData, 0);
+    // Execute the transaction to set the Guard
+    await execTransaction([alice], safe, safe.target, 0, setGuardData, 0);
   });
 
   // Test case to verify token transfer to bob
   it("Should not allow delegatecall", async function () {
     const wallets = [alice];
-    // Execute the transaction to enable the module
+
     await expect(
       execTransaction(wallets, safe, ZeroAddress, 0, "0x", 1)
     ).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
