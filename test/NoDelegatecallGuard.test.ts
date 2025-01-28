@@ -1,8 +1,9 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
-import { Contract, Signer, ZeroAddress } from "ethers";
+import { Signer, ZeroAddress } from "ethers";
 import { Safe, Safe__factory, SafeProxyFactory } from "../typechain-types";
 import { execTransaction } from "./utils/utils";
+import { NoDelegateCallGuard } from "../typechain-types/contracts/NoDelegateCallGuard.sol/NoDelegatecallGuard";
 
 describe("Example module tests", async function () {
   let deployer: Signer;
@@ -11,7 +12,7 @@ describe("Example module tests", async function () {
   let proxyFactory: SafeProxyFactory;
   let safeFactory: Safe__factory;
   let safe: Safe;
-  let exampleGuard: Contract;
+  let exampleGuard: NoDelegateCallGuard;
   const threshold = 1;
 
   // Setup signers and deploy contracts before running tests
@@ -64,13 +65,13 @@ describe("Example module tests", async function () {
     safe = await ethers.getContractAt("Safe", safeAddress);
 
     // Enable the module in the safe
-    const enableModuleData = masterCopy.interface.encodeFunctionData(
+    const enableGuardData = masterCopy.interface.encodeFunctionData(
       "setGuard",
       [exampleGuard.target]
     );
 
     // Execute the transaction to enable the module
-    await execTransaction([alice], safe, safe.target, 0, enableModuleData, 0);
+    await execTransaction([alice], safe, safe.target, 0, enableGuardData, 0);
   });
 
   // Test case to verify token transfer to bob
