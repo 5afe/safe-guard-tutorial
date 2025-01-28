@@ -1,4 +1,3 @@
-
 import { ethers } from "hardhat";
 import { Signer, AddressLike, BigNumberish, ZeroAddress } from "ethers";
 import { Safe } from "../../typechain-types";
@@ -18,7 +17,7 @@ const execTransaction = async function (
   to: AddressLike,
   value: BigNumberish,
   data: string,
-  operation: number,
+  operation: number
 ): Promise<void> {
   // Get the current nonce of the Safe contract
   const nonce = await safe.nonce();
@@ -41,7 +40,9 @@ const execTransaction = async function (
   const bytesDataHash = ethers.getBytes(transactionHash);
 
   // Get the addresses of the signers
-  const addresses = await Promise.all(wallets.map(wallet => wallet.getAddress()));
+  const addresses = await Promise.all(
+    wallets.map((wallet) => wallet.getAddress())
+  );
   // Sort the signers by their addresses
   const sorted = wallets.sort((a, b) => {
     const addressA = addresses[wallets.indexOf(a)];
@@ -72,6 +73,4 @@ const execTransaction = async function (
   );
 };
 
-export {
-  execTransaction,
-};
+export { execTransaction };

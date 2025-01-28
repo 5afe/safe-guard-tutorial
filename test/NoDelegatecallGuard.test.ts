@@ -12,6 +12,7 @@ describe("Example module tests", async function () {
   let safeFactory: Safe__factory;
   let safe: Safe;
   let exampleGuard: Contract;
+  const threshold = 1;
 
   // Setup signers and deploy contracts before running tests
   beforeEach(async () => {
@@ -23,16 +24,8 @@ describe("Example module tests", async function () {
     proxyFactory = await (
       await ethers.getContractFactory("SafeProxyFactory", deployer)
     ).deploy();
-  });
 
-  // Setup contracts: Deploy a new token contract, create a new Safe, deploy the TokenWithdrawModule contract, and enable the module in the Safe.
-  const setupContracts = async (
-    walletOwners: Signer[],
-    threshold: number
-  ) => {
-    const ownerAddresses = await Promise.all(
-      walletOwners.map(async (walletOwner) => await walletOwner.getAddress())
-    );
+    const ownerAddresses = [await alice.getAddress()];
 
     const safeData = masterCopy.interface.encodeFunctionData("setup", [
       ownerAddresses,
@@ -77,43 +70,22 @@ describe("Example module tests", async function () {
     );
 
     // Execute the transaction to enable the module
-    await execTransaction(
-      walletOwners.slice(0, threshold),
-      safe,
-      safe.target,
-      0,
-      enableModuleData,
-      0
-    );
-  };
+    await execTransaction([alice], safe, safe.target, 0, enableModuleData, 0);
+  });
 
   // Test case to verify token transfer to bob
-  it("Should not allow delegate call", async function () {
+  it("Should not allow delegatecall", async function () {
     const wallets = [alice];
-    await setupContracts(wallets, 1);
     // Execute the transaction to enable the module
-    await expect ( execTransaction(
-        wallets,
-        safe,
-        ZeroAddress,
-        0,
-        "0x",
-        1
-    )).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
+    await expect(
+      execTransaction(wallets, safe, ZeroAddress, 0, "0x", 1)
+    ).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
   });
 
   // Test case to verify token transfer to bob
   it("Should allow call", async function () {
     const wallets = [alice];
-    await setupContracts(wallets, 1);
 
-    expect(await execTransaction(
-      wallets,
-      safe,
-      ZeroAddress,
-      0,
-      "0x",
-      0
-    ));
+    expect(await execTransaction(wallets, safe, ZeroAddress, 0, "0x", 0));
   });
 });
