@@ -12,6 +12,7 @@ const config: HardhatUserConfig = {
   dependencyCompiler: {
     paths: [
       "@safe-global/safe-contracts/contracts/proxies/SafeProxyFactory.sol",
+      "@safe-global/safe-contracts/contracts/Safe.sol",
     ],
   },
 };

@@ -68,7 +68,7 @@ describe("Example module tests", async function () {
       await ethers.getContractFactory("NoDegegateCallGuard", deployer)
     ).deploy();
 
-    const safe = await ethers.getContractAt("Safe", safeAddress);
+    safe = await ethers.getContractAt("Safe", safeAddress);
 
     // Enable the module in the safe
     const enableModuleData = masterCopy.interface.encodeFunctionData(
@@ -100,5 +100,14 @@ describe("Example module tests", async function () {
         "0x",
         1
     )).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
+
+    expect(await execTransaction(
+      wallets,
+      safe,
+      ZeroAddress,
+      0,
+      "0x",
+      0
+  ));
   });
 });
