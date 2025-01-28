@@ -14,7 +14,7 @@ describe("Example module tests", async function () {
   let exampleGuard: Contract;
 
   // Setup signers and deploy contracts before running tests
-  before(async () => {
+  beforeEach(async () => {
     [deployer, alice] = await ethers.getSigners();
 
     safeFactory = await ethers.getContractFactory("Safe", deployer);
@@ -88,7 +88,7 @@ describe("Example module tests", async function () {
   };
 
   // Test case to verify token transfer to bob
-  it("Should successfully transfer tokens to bob", async function () {
+  it("Should not allow delegate call", async function () {
     const wallets = [alice];
     await setupContracts(wallets, 1);
     // Execute the transaction to enable the module
@@ -100,6 +100,12 @@ describe("Example module tests", async function () {
         "0x",
         1
     )).to.be.revertedWithCustomError(exampleGuard, "DelegateCallNotAllowed");
+  });
+
+  // Test case to verify token transfer to bob
+  it("Should allow call", async function () {
+    const wallets = [alice];
+    await setupContracts(wallets, 1);
 
     expect(await execTransaction(
       wallets,
@@ -108,6 +114,6 @@ describe("Example module tests", async function () {
       0,
       "0x",
       0
-  ));
+    ));
   });
 });
